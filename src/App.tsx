@@ -44,7 +44,10 @@ const getCurrentTask = (time: Date) => {
 const secondsToMinutesAndSeconds = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const secondsLeft = seconds % 60;
-  return `${minutes}:${secondsLeft.toFixed(0)}`;
+  return `${minutes.toFixed(0).toString().padStart(2, "0")}:${secondsLeft
+    .toFixed(0)
+    .toString()
+    .padStart(2, "0")}`;
 };
 
 function App() {
