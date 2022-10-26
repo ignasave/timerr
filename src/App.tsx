@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 const tasks = [
-  { taskName: "Palcare", start: "08:00", end: "10:00" },
-  { taskName: "GasBuddy", start: "11:00", end: "13:00" },
+  { taskName: "Palcare", start: "07:00", end: "08:30" },
+  { taskName: "Palcare", start: "09:30", end: "10:00" },
+  { taskName: "GasBuddy", start: "10:00", end: "12:00" },
   { taskName: "GasBuddy", start: "14:00", end: "17:00" },
   { taskName: "GasBuddy", start: "18:00", end: "20:00" },
 ];
