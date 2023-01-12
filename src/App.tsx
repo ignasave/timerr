@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
+import pauseIMG from "./assets/pause.png";
+import playIMG from "./assets/play.png";
+import _ from "lodash";
 
 const tasks = [
-  { taskName: "Palcare", start: "07:00", end: "08:30" },
-  { taskName: "Palcare", start: "09:30", end: "10:00" },
-  { taskName: "GasBuddy", start: "10:00", end: "12:00" },
+  { taskName: "Gym", start: "10:00", end: "13:00" },
   { taskName: "GasBuddy", start: "14:00", end: "17:00" },
-  { taskName: "GasBuddy", start: "18:00", end: "20:00" },
+  { taskName: "GasBuddy", start: "18:00", end: "24:00" },
 ];
 
 const getCurrentTask = (time: Date) => {
@@ -17,7 +18,6 @@ const getCurrentTask = (time: Date) => {
     const [endHours, endMinutes] = task.end
       .split(":")
       .map((str) => Number(str));
-    console.log(startHours, startMinutes, endHours, endMinutes, time);
     const startTime = new Date(
       time.getFullYear(),
       time.getMonth(),
@@ -54,14 +54,18 @@ const secondsToMinutesAndSeconds = (seconds: number) => {
 function App() {
   const [currentTask, setCurrentTask] = useState(getCurrentTask(new Date()));
   const [secondsLeftForTask, setSecondsLeftForTask] = useState(0);
+  const [currentTaskTotalSecondsWorked, setCurrentTaskTotalSecondsWorked] =
+    useState(0);
+  const [currentTaskTotalTimerOn, setCurrentTaskTotalTimerOn] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       const currentTime = new Date();
-      const currentTask = getCurrentTask(currentTime);
-      setCurrentTask(currentTask);
-      if (currentTask) {
-        const [endHours, endMinutes] = currentTask.end
+      let previousTask = { ...currentTask };
+      const newCurrent = getCurrentTask(currentTime);
+      setCurrentTask(newCurrent);
+      if (newCurrent) {
+        const [endHours, endMinutes] = newCurrent.end
           .split(":")
           .map((str) => Number(str));
         const endTime = new Date(
@@ -74,6 +78,13 @@ function App() {
         setSecondsLeftForTask(
           (endTime.getTime() - currentTime.getTime()) / 1000
         );
+        if (_.isEqual(previousTask, newCurrent) && currentTaskTotalTimerOn) {
+          setCurrentTaskTotalSecondsWorked((prev) => prev + 1);
+        }
+        if (!_.isEqual(previousTask, newCurrent)) {
+          setCurrentTaskTotalSecondsWorked(0);
+          setCurrentTaskTotalTimerOn(true);
+        }
       }
     }, 1000);
 
@@ -98,6 +109,14 @@ function App() {
           <p className="timer">
             {secondsToMinutesAndSeconds(secondsLeftForTask)}
           </p>
+          <div className="current-task-timer">
+            <img
+              className="play-pause"
+              onClick={() => setCurrentTaskTotalTimerOn((prev) => !prev)}
+              src={currentTaskTotalTimerOn ? pauseIMG : playIMG}
+            />
+            <p>{secondsToMinutesAndSeconds(currentTaskTotalSecondsWorked)}</p>
+          </div>
         </>
       ) : (
         <p className="timer">FREE TIME</p>

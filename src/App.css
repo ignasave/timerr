@@ -39,3 +39,13 @@
 .read-the-docs {
   color: #888;
 }
+
+.play-pause {
+  width: 4em;
+  height: 4em;
+}
+
+.current-task-timer {
+  display: "flex";
+  flex-direction: column;
+}
